@@ -58,8 +58,8 @@ fn print_calculation_results(
         payment_data,
         max_local_performance_indexes,
         max_global_performance_indexes,
-        max_number_length,
-        max_percentage_length,
+        _max_number_length,
+        _max_percentage_length,
     ) = payment_data;
     payment_data.iter().enumerate().for_each(|(index, payment)| {
             if index % 12 == 0 {

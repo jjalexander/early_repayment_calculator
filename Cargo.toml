@@ -3,6 +3,11 @@ name = "early_repayment_calculator"
 version = "0.1.0"
 edition = "2021"
 
+[profile.release]
+lto = true
+codegen-units = 1
+strip = "symbols"
+
 [dependencies]
 chrono = "0.4.38"
 colored = "2.1.0"
