@@ -32,32 +32,35 @@ fn main() -> Result<(), Box<dyn Error>> {
         .filter_map(|(i, file)| file.file_name().and_then(|f| f.to_str().map(|f| (i, f))))
         .filter(|(_, f)| f.starts_with("alphabank"))
         .collect::<Vec<_>>();
+    println!(
+        "Am gasit {} fisiere AlphaBank in directorul {:?}",
+        alpha_bank_files.len(),
+        input_folder
+    );
+    alpha_bank_files.iter().for_each(|(i, f)| {
+        println!("Procesare fisier: {}", f);
+        let payment_data = alphabank::extract_payment_data(&pdf_files[*i]);
+        print_calculation_results(payment_data);
+    });
 
-    println!("Am gasit {} fisiere AlphaBank in directorul {:?}", alpha_bank_files.len(), input_folder);
-            alpha_bank_files.iter().for_each(|(i, f)| {
-                println!("Procesare fisier: {}", f);
-                let payment_data = alphabank::extract_payment_data(&pdf_files[*i]);
-                print_calculation_results(payment_data);
-            });
-
-    let ing_bank_files =
-
-
-    pdf_files
+    let ing_bank_files = pdf_files
         .iter()
         .enumerate()
         .filter_map(|(i, file)| file.file_name().and_then(|f| f.to_str().map(|f| (i, f))))
         .filter(|(_, f)| f.starts_with("ingbank"))
         .collect::<Vec<_>>();
-
-    println!("Am gasit {} fisiere ING Bank in directorul {:?}", ing_bank_files.len(), input_folder);
+    println!(
+        "Am gasit {} fisiere ING Bank in directorul {:?}",
+        ing_bank_files.len(),
+        input_folder
+    );
     ing_bank_files.iter().for_each(|(i, f)| {
         println!("Procesare fisier: {}", f);
         let payment_data = ingbank::extract_payment_data(&pdf_files[*i]);
         print_calculation_results(payment_data);
     });
 
-    press_btn_continue::wait("Apasati orice tasta pentru a inchide programul").unwrap();
+    press_btn_continue::wait("Apasati orice tasta pentru a inchide programul...").unwrap();
 
     Ok(())
 }
@@ -95,13 +98,14 @@ fn print_calculation_results(
             let is_max_local_performance = max_local_performance_indexes.contains(&index);
             let is_max_global_performance = max_global_performance_indexes.contains(&index);
 
-            println!("| {:5} | {:?} | {:11.2} RON | {:11.2} RON | {} | {:11.2} RON | {:11.2} RON | {} | {:11.2} RON |",
+            println!("| {:5} | {:?} | {:12.2} RON | {:12.2} RON | {} | {:12.2} RON | {:12.2} RON | {} | {:12.2} RON |",
                 index+1,
                 date,
                 local_principal,
-                local_interest,
+                local_interest,{
+                    let local_performance_string= format!("{:11.2}%", local_performance);
                 match is_max_local_performance {
-                    true => format!("{:10.2}%", local_performance).blue().bold(),
+                    true => local_performance_string.blue().bold(),
                     false => {
                         let starting_index = index.saturating_sub(12);
                         let ending_index = index.saturating_sub(1);
@@ -111,26 +115,32 @@ fn print_calculation_results(
                             .sum::<f64>() / (ending_index - starting_index + 1) as f64;
 
                         if local_performance > &median_local_performance_over_last_12_months {
-                            format!("{:10.2}%", local_performance).green()
+                            local_performance_string.green()
                         } else {
-                            format!("{:10.2}%", local_performance).red()
+                            local_performance_string.red()
                         }
                     }
-                },
+                }},
                 total_principal,
-                total_interest,
-                match is_max_global_performance{
-                    true => format!("{:10.2}%", total_performance).blue().bold(),
-                    false => {
-                        let previos_global_performance = payment_data.get(index.saturating_sub(1)).map(|(_, _, _, _, _, _, total_performance)| total_performance).unwrap_or(&0.0);
+                total_interest,{
+                    let global_performance_string= format!("{:11.2}%", total_performance);
+                    match is_max_global_performance {
+                        true => global_performance_string.blue().bold(),
+                        false => {
+                            let starting_index = index.saturating_sub(12);
+                            let ending_index = index.saturating_sub(1);
+                            let median_global_performance_over_last_12_months = payment_data[starting_index..=ending_index]
+                                .iter()
+                                .map(|(_, _, _, _, _, _, total_performance)| total_performance)
+                                .sum::<f64>() / (ending_index - starting_index + 1) as f64;
 
-                        if total_performance > previos_global_performance {
-                            format!("{:10.2}%", total_performance).green()
-                        } else {
-                            format!("{:10.2}%", total_performance).red()
+                            if total_performance > &median_global_performance_over_last_12_months {
+                                global_performance_string.green()
+                            } else {
+                                global_performance_string.red()
+                            }
                         }
-                    }
-                },
+                    }},
                 total_principal + total_interest,
             );
         });
@@ -140,13 +150,13 @@ fn print_calculation_results(
 fn table_header() {
     dashed_line();
     println!(
-        "| Index | Date       | Local Principal | Local Interest  | Local perf. | Total Principal | Total Interest  | Total perf. | Absolute Total  |"
+        "| Număr | Dată       | Capital          | Dobândă          | Raport       | Capital total    | Dobândă totală   | Raport total | Total absolut    |"
     );
     dashed_line();
 }
 
 fn dashed_line() {
     println!(
-        "+-------+------------+-----------------+-----------------+-------------+-----------------+-----------------+-------------+-----------------+"
+        "+-------+------------+------------------+------------------+--------------+------------------+------------------+--------------+------------------+"
     );
 }
