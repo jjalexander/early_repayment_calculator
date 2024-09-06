@@ -1,5 +1,3 @@
-use std::cmp::max;
-
 use chrono::NaiveDate;
 
 pub(crate) fn extract_payment_data(
@@ -8,8 +6,6 @@ pub(crate) fn extract_payment_data(
     Vec<(NaiveDate, f64, f64, f64, f64, f64, f64)>,
     Vec<usize>,
     Vec<usize>,
-    usize,
-    usize,
 ) {
     let text = pdf_extract::extract_text(pdf_file).unwrap();
     let lines = text.lines().collect::<Vec<_>>();
@@ -48,6 +44,7 @@ pub(crate) fn extract_payment_data(
     let mut max_local_performance_indexes = Vec::new();
     let mut max_global_performance = 0.0;
     let mut max_global_performance_indexes = Vec::new();
+
     let payment_data: Vec<(NaiveDate, f64, f64, f64, f64, f64, f64)> = concatenated_lines
         .iter()
         .enumerate()
@@ -90,17 +87,9 @@ pub(crate) fn extract_payment_data(
         })
         .collect();
 
-    let max_number_length = (total_principal + total_interest).to_string().len();
-    let max_percentage_length = max(
-        max_local_performance.to_string().len(),
-        max_global_performance.to_string().len(),
-    );
-
     (
         payment_data,
         max_local_performance_indexes,
         max_global_performance_indexes,
-        max_number_length,
-        max_percentage_length,
     )
 }
