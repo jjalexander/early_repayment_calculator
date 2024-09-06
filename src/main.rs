@@ -8,9 +8,10 @@ mod alphabank;
 mod ingbank;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let input_folder = Path::new("input");
+    let input_folder = Path::new("scadentare");
     if !input_folder.exists() || !input_folder.is_dir() {
-        return Err("Input folder does not exist or is not a directory".into());
+        std::fs::create_dir_all(input_folder)?;
+        println!("Am creat directorul: {:?}", input_folder);
     }
 
     let pdf_files = WalkDir::new(input_folder)
@@ -20,27 +21,43 @@ fn main() -> Result<(), Box<dyn Error>> {
         .map(|e| e.path().to_path_buf())
         .collect::<Vec<_>>();
 
-    pdf_files
+    if pdf_files.is_empty() {
+        println!("Nu am gasit fisiere PDF in directorul {:?}", input_folder);
+        return Ok(());
+    }
+
+    let alpha_bank_files = pdf_files
         .iter()
         .enumerate()
         .filter_map(|(i, file)| file.file_name().and_then(|f| f.to_str().map(|f| (i, f))))
         .filter(|(_, f)| f.starts_with("alphabank"))
-        .for_each(|(i, f)| {
-            println!("Processing file: {}", f);
-            let payment_data = alphabank::extract_payment_data(&pdf_files[i]);
-            print_calculation_results(payment_data);
-        });
+        .collect::<Vec<_>>();
+
+    println!("Am gasit {} fisiere AlphaBank in directorul {:?}", alpha_bank_files.len(), input_folder);
+            alpha_bank_files.iter().for_each(|(i, f)| {
+                println!("Procesare fisier: {}", f);
+                let payment_data = alphabank::extract_payment_data(&pdf_files[*i]);
+                print_calculation_results(payment_data);
+            });
+
+    let ing_bank_files =
+
 
     pdf_files
         .iter()
         .enumerate()
         .filter_map(|(i, file)| file.file_name().and_then(|f| f.to_str().map(|f| (i, f))))
         .filter(|(_, f)| f.starts_with("ingbank"))
-        .for_each(|(i, f)| {
-            println!("Processing file: {}", f);
-            let payment_data = ingbank::extract_payment_data(&pdf_files[i]);
-            print_calculation_results(payment_data);
-        });
+        .collect::<Vec<_>>();
+
+    println!("Am gasit {} fisiere ING Bank in directorul {:?}", ing_bank_files.len(), input_folder);
+    ing_bank_files.iter().for_each(|(i, f)| {
+        println!("Procesare fisier: {}", f);
+        let payment_data = ingbank::extract_payment_data(&pdf_files[*i]);
+        print_calculation_results(payment_data);
+    });
+
+    press_btn_continue::wait("Apasati orice tasta pentru a inchide programul").unwrap();
 
     Ok(())
 }

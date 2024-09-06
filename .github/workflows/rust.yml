@@ -33,7 +33,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          bin: early_repayment_calculator
+          bin: calculator_rambursare_anticipata
           target: ${{ matrix.target }}
           tar: unix
           zip: windows

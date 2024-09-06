@@ -1,5 +1,5 @@
 [package]
-name = "early_repayment_calculator"
+name = "calculator_rambursare_anticipata"
 version = "0.1.0"
 edition = "2021"
 
