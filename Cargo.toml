@@ -1,5 +1,5 @@
 [package]
-name = "alpha_bank_early_repayment_efficiency_calculator"
+name = "early_repayment_calculator"
 version = "0.1.0"
 edition = "2021"
 
