@@ -11,10 +11,10 @@ Folosind aceste date, calculează economia realizată prin rambursarea anticipat
 Scadențar de rambursare emis de către bancă în format PDF al cărui nume începe numele băncii
 
 ## Instrucțiuni de utilizare
-Extrageți conținutul arhivei (.zip)
-Folosind procedeul "drag-and-drop" (mutați un document deasupra altui document), mutați scadențarul (.pdf) deasupra executabilului (.exe)
-Calculele rezultate vor fi prezentate în fereastra consolei
-Pe coloanele raport si raport totalcoloanele raport si raport total, sunt marcate cu verde valorile care sunt mai mari decât media celor 12 de dinainte și cu albastru cea mai mare de pe întreaga coloană
+- Extrageți conținutul arhivei (.zip)
+- Folosind procedeul "drag-and-drop" (mutați un document deasupra altui document), mutați scadențarul (.pdf) deasupra executabilului (.exe)
+- Calculele rezultate vor fi prezentate în fereastra consolei
+- Pe coloanele raport si raport totalcoloanele raport si raport total, sunt marcate cu verde valorile care sunt mai mari decât media celor 12 de dinainte și cu albastru cea mai mare de pe întreaga coloană
 
 ## Băncile acceptate:
 - Alpha Bank (ex. alphabank.pdf)
