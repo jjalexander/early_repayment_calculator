@@ -4,7 +4,6 @@ use clap::Parser;
 use colored::Colorize;
 use std::cmp::max;
 use std::error::Error;
-use std::fmt;
 use strum::{EnumIter, IntoEnumIterator};
 use table::{dashed_line, table_header};
 
@@ -18,15 +17,10 @@ enum Bank {
     AlphaBank,
     INGBank,
 }
-
-impl fmt::Display for Bank {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        // match self {
-        //     Bank::AlphaBank => write!(f, "alphabank"),
-        //     Bank::INGBank => write!(f, "ingbank"),
-        // }
-        let bank_name = format!("{:?}", self).to_ascii_lowercase();
-        write!(f, "{}", bank_name)
+impl Bank {
+    fn determine_bank(file_name: &str) -> Option<Bank> {
+        let file_name = file_name.to_ascii_lowercase();
+        Bank::iter().find(|bank| file_name.starts_with(&format!("{:?}", bank).to_ascii_lowercase()))
     }
 }
 
@@ -49,7 +43,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         return Err("Fișierul nu are nume valid.".into());
     };
 
-    let Some(bank) = Bank::iter().find(|bank| file_name.starts_with(&bank.to_string())) else {
+    let Some(bank) = Bank::determine_bank(file_name) else {
         return Err("Fișierul nu are nume de bancă.".into());
     };
 
