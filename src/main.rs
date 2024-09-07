@@ -3,7 +3,6 @@ use chrono::NaiveDate;
 use clap::Parser;
 use colored::Colorize;
 use std::cmp::max;
-use std::error::Error;
 use strum::{EnumIter, IntoEnumIterator};
 use table::{dashed_line, table_header};
 
@@ -15,7 +14,7 @@ mod table;
 #[derive(EnumIter, Debug)]
 enum Bank {
     AlphaBank,
-    INGBank,
+    ING,
 }
 impl Bank {
     fn determine_bank(file_name: &str) -> Option<Bank> {
@@ -24,39 +23,44 @@ impl Bank {
     }
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() {
     let args = Arguments::parse();
 
-    let Some(extension) = args.input_file.extension() else {
-        return Err("Fișierul nu are extensie.".into());
-    };
-
-    if extension != "pdf" {
-        return Err("Fișierul nu are extensie PDF.".into());
-    }
-
-    let Some(file_name) = args.input_file.file_name() else {
-        return Err("Fișierul nu are nume.".into());
-    };
-
-    let Some(file_name) = file_name.to_str() else {
-        return Err("Fișierul nu are nume valid.".into());
-    };
-
-    let Some(bank) = Bank::determine_bank(file_name) else {
-        return Err("Fișierul nu are nume de bancă.".into());
-    };
-
-    let payment_data = match bank {
-        Bank::AlphaBank => alphabank::extract_payment_data(&args.input_file),
-        Bank::INGBank => ingbank::extract_payment_data(&args.input_file),
-    };
-
-    print_calculation_results(payment_data);
+    process_file(args);
 
     press_btn_continue::wait("Apasati orice tasta pentru a inchide programul ...").unwrap();
+}
 
-    Ok(())
+fn process_file(args: Arguments) {
+    let Some(extension) = args.input_file.extension() else {
+        eprintln!("Fișierul nu are extensie.");
+        return;
+    };
+    if extension != "pdf" {
+        eprintln!("Fișierul nu are extensie PDF.");
+        return;
+    }
+    let Some(file_name) = args.input_file.file_name() else {
+        eprintln!("Fișierul nu are nume.");
+        return;
+    };
+    let Some(file_name) = file_name.to_str() else {
+        eprintln!("Fișierul nu are nume valid.");
+        return;
+    };
+    let Some(bank) = Bank::determine_bank(file_name) else {
+        let banks = Bank::iter()
+            .map(|bank| format!("{:?}", bank).to_ascii_lowercase())
+            .collect::<Vec<String>>()
+            .join(", ");
+        eprintln!("Numele fișierului nu corespunde niciunui tip de bancă. Numele fișierului trebuie să înceapă cu una dintre următoarele valori: {}", banks);
+        return;
+    };
+    let payment_data = match bank {
+        Bank::AlphaBank => alphabank::extract_payment_data(&args.input_file),
+        Bank::ING => ingbank::extract_payment_data(&args.input_file),
+    };
+    print_calculation_results(payment_data);
 }
 
 fn print_calculation_results(
