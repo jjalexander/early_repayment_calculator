@@ -14,7 +14,7 @@ Scadențar de rambursare emis de către bancă în format PDF al cărui nume în
 - Extrageți conținutul arhivei (.zip)
 - Folosind procedeul "drag-and-drop" (mutați un document deasupra altui document), mutați scadențarul (.pdf) deasupra executabilului (.exe)
 - Calculele rezultate vor fi prezentate în fereastra consolei
-- Pe coloanele raport si raport totalcoloanele raport si raport total, sunt marcate cu verde valorile care sunt mai mari decât media celor 12 de dinainte și cu albastru cea mai mare de pe întreaga coloană
+- Pe coloanele raport si raport total, sunt marcate cu verde valorile care sunt mai mari decât media celor 12 de dinainte și cu albastru cea mai mare de pe întreaga coloană
 
 ## Băncile acceptate:
 - Alpha Bank (ex. alphabank.pdf)
