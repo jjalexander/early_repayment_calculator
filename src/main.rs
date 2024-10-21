@@ -13,7 +13,6 @@ mod table;
 
 #[derive(EnumIter, Debug)]
 enum Bank {
-    AlphaBank,
     ING,
 }
 impl Bank {
@@ -57,7 +56,6 @@ fn process_file(args: Arguments) {
         return;
     };
     let payment_data = match bank {
-        Bank::AlphaBank => alphabank::extract_payment_data(&args.input_file),
         Bank::ING => ingbank::extract_payment_data(&args.input_file),
     };
     print_calculation_results(payment_data);

@@ -1,6 +1,6 @@
 use chrono::NaiveDate;
 
-pub(crate) fn extract_payment_data(
+pub(crate) fn _extract_payment_data(
     pdf_file: &std::path::PathBuf,
 ) -> (
     Vec<(NaiveDate, f64, f64, f64, f64, f64, f64)>,
