@@ -17,5 +17,5 @@ Scadențar de rambursare emis de către bancă în format PDF al cărui nume în
 - Pe coloanele raport si raport total, sunt marcate cu verde valorile care sunt mai mari decât media celor 12 de dinainte și cu albastru cea mai mare de pe întreaga coloană
 
 ## Băncile acceptate:
-- Alpha Bank (ex. alphabank.pdf)
+-~~Alpha Bank (ex. alphabank.pdf)~~
 - ING Bank (ex. ingbank-2023.iul.12.pdf)
