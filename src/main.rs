@@ -7,12 +7,15 @@ use strum::{EnumIter, IntoEnumIterator};
 use table::{dashed_line, table_header};
 
 mod alphabank;
+mod alphabankexported;
 mod arguments;
 mod ingbank;
 mod table;
 
 #[derive(EnumIter, Debug)]
 enum Bank {
+    AlphaBankExported,
+    AlphaBank,
     ING,
 }
 impl Bank {
@@ -56,6 +59,8 @@ fn process_file(args: Arguments) {
         return;
     };
     let payment_data = match bank {
+        Bank::AlphaBankExported => alphabankexported::extract_payment_data(&args.input_file),
+        Bank::AlphaBank => alphabankexported::extract_payment_data(&args.input_file),
         Bank::ING => ingbank::extract_payment_data(&args.input_file),
     };
     print_calculation_results(payment_data);
